@@ -3,7 +3,7 @@ from socket import *
 import sys
 
 HOST = '0.0.0.0'
-PORT = 8082
+PORT = 8080
 
 serverSocket = socket(AF_INET, SOCK_STREAM)
 # Prepare a server socket
@@ -29,12 +29,15 @@ while True:
         connectionSocket.send('\r\n'.encode())
 
         connectionSocket.close()
-    except IOError as e:
+    except IOError:
         # Send respone message for file not found
         connectionSocket.send('HTTP/1.1 404 Not Found\r\n'.encode())
 
         # Close client socket
         connectionSocket.close()
+    except KeyboardInterrupt:
+        connectionSocket.close()
+        break
 
 serverSocket.close()
 sys.exit()

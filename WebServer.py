@@ -1,19 +1,12 @@
 # import socket module
 from socket import *
 import sys
+import threading
 
 HOST = '0.0.0.0'
 PORT = 8080
 
-serverSocket = socket(AF_INET, SOCK_STREAM)
-# Prepare a server socket
-serverSocket.bind((HOST, PORT))
-serverSocket.listen(1)
-
-while True:
-    # Establish the conneciton
-    print('Ready to server...')
-    connectionSocket, addr = serverSocket.accept()
+def work(connectionSocket, addr):
     try:
         message = connectionSocket.recv(2048)
         filename =  message.split()[1]
@@ -35,9 +28,17 @@ while True:
 
         # Close client socket
         connectionSocket.close()
-    except KeyboardInterrupt:
-        connectionSocket.close()
-        break
+
+serverSocket = socket(AF_INET, SOCK_STREAM)
+# Prepare a server socket
+serverSocket.bind((HOST, PORT))
+serverSocket.listen(100)
+
+while True:
+    # Establish the conneciton
+    connectionSocket, addr = serverSocket.accept()
+    threading.Thread(target=work, args=(connectionSocket, addr)).start()
+    
 
 serverSocket.close()
 sys.exit()

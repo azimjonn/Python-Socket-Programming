@@ -4,11 +4,12 @@ import sys
 import threading
 
 HOST = '0.0.0.0'
-PORT = 8080
+PORT = 80
 
 def work(connectionSocket, addr):
     try:
         message = connectionSocket.recv(2048)
+        print(message.decode())
         filename =  message.split()[1]
         f = open(filename[1:])
         outputdata = f.readlines()
